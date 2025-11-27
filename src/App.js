@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Box, Container, Typography } from '@mui/material';
@@ -7,170 +7,163 @@ import './styles/global.css';
 import './styles/animations.css';
 import { useStarAnimation } from './hooks/useStarAnimation';
 
-function App() {
-  const { triggerStars, StarsContainer } = useStarAnimation();
+// Layout components
+import Header from './components/layout/Header';
+import FloatingNav from './components/layout/FloatingNav';
+import Footer from './components/layout/Footer';
 
-  // Demo: trigger stars on logo click
-  const handleLogoClick = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
-    triggerStars(x, y, 10);
+// UI Components
+import AnimatedButton from './components/common/Button/AnimatedButton';
+import PhoneInput from './components/common/Input/PhoneInput';
+import EmailInput from './components/common/Input/EmailInput';
+
+function App() {
+  const { StarsContainer } = useStarAnimation();
+  const [activeTab, setActiveTab] = useState('buy');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
   };
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
-        <Container maxWidth="lg">
-          <Box
-            sx={{
-              py: 8,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 3,
-            }}
-          >
-            {/* Logo */}
-            <Box
-              onClick={handleLogoClick}
-              sx={{
-                fontSize: '64px',
-                cursor: 'pointer',
-                animation: 'float 3s ease-in-out infinite',
-                '&:hover': {
-                  animation: 'pulse 0.5s ease-in-out',
-                },
-              }}
-            >
-              ✨
-            </Box>
+      <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', display: 'flex', flexDirection: 'column' }}>
+        {/* Header */}
+        <Header />
 
-            {/* Title */}
-            <Typography
-              variant="h1"
-              sx={{
-                color: 'primary.dark',
-                textAlign: 'center',
-                fontFamily: 'Nunito',
-              }}
-            >
-              MagicCard
-            </Typography>
+        {/* Main Content */}
+        <Box sx={{ flex: 1, pt: '120px' }}> {/* Offset for fixed header */}
+          {/* Floating Navigation */}
+          <FloatingNav activeTab={activeTab} onTabChange={handleTabChange} />
 
-            {/* Slogan */}
-            <Typography
-              variant="h3"
-              sx={{
-                color: 'text.secondary',
-                textAlign: 'center',
-              }}
-            >
-              Магія подарунків
-            </Typography>
+          {/* Content Area */}
+          <Container maxWidth="md">
+            <Box sx={{ py: 4 }}>
+              {/* Welcome Section */}
+              <Box sx={{ textAlign: 'center', mb: 6 }}>
+                <Typography
+                  variant="h2"
+                  sx={{
+                    color: 'primary.dark',
+                    mb: 2,
+                  }}
+                >
+                  {activeTab === 'buy' ? '💳 Купити сертифікат' : '✨ Активувати сертифікат'}
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: 'text.secondary',
+                    maxWidth: 600,
+                    mx: 'auto',
+                  }}
+                >
+                  {activeTab === 'buy'
+                    ? 'Подаруйте магію вибору! Оберіть номінал і отримайте сертифікат на email.'
+                    : 'Введіть дані сертифікату та оберіть бренд для активації подарунка.'}
+                </Typography>
+              </Box>
 
-            {/* Description */}
-            <Typography
-              variant="body1"
-              sx={{
-                color: 'text.secondary',
-                textAlign: 'center',
-                maxWidth: 600,
-                mt: 2,
-              }}
-            >
-              Вітаємо! Це базова структура проекту MagicCard. Проект налаштовано з Material-UI темою,
-              анімаціями та готовою структурою папок.
-            </Typography>
+              {/* Demo Components */}
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h3" sx={{ mb: 3, color: 'primary.dark' }}>
+                  Демо UI компонентів:
+                </Typography>
 
-            {/* Demo Box */}
-            <Box
-              onClick={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                triggerStars(
-                  rect.left + rect.width / 2,
-                  rect.top + rect.height / 2,
-                  7
-                );
-              }}
-              sx={{
-                mt: 4,
-                p: 4,
-                bgcolor: 'primary.light',
-                borderRadius: 3,
-                border: 2,
-                borderColor: 'primary.main',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                '&:hover': {
-                  transform: 'scale(1.05)',
-                  boxShadow: '0 8px 24px rgba(139, 92, 246, 0.3)',
-                },
-              }}
-            >
-              <Typography
-                variant="body1"
+                {/* Phone Input Demo */}
+                <Box sx={{ mb: 3 }}>
+                  <PhoneInput
+                    value={phone}
+                    onChange={setPhone}
+                    onBlur={() => {}}
+                    touched={phone.length > 0}
+                    required
+                  />
+                </Box>
+
+                {/* Email Input Demo */}
+                <Box sx={{ mb: 3 }}>
+                  <EmailInput
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    onBlur={() => {}}
+                    touched={email.length > 0}
+                    helperText="Сертифікат буде надіслано на цей email"
+                  />
+                </Box>
+
+                {/* Animated Buttons Demo */}
+                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                  <AnimatedButton
+                    variant="contained"
+                    color="primary"
+                    withStars
+                  >
+                    💳 Оплатити Monobank
+                  </AnimatedButton>
+
+                  <AnimatedButton
+                    variant="outlined"
+                    color="primary"
+                    withStars
+                  >
+                    ✨ Перевірити
+                  </AnimatedButton>
+
+                  <AnimatedButton
+                    variant="text"
+                    color="secondary"
+                    withStars={false}
+                  >
+                    Додати ще
+                  </AnimatedButton>
+                </Box>
+              </Box>
+
+              {/* Status Info */}
+              <Box
                 sx={{
-                  color: 'primary.dark',
-                  fontWeight: 600,
-                  textAlign: 'center',
+                  mt: 6,
+                  p: 4,
+                  bgcolor: 'background.paper',
+                  borderRadius: 2,
+                  border: 1,
+                  borderColor: 'grey.200',
                 }}
               >
-                👆 Натисніть для магічних зірочок! ⭐
-              </Typography>
-            </Box>
+                <Typography variant="h3" sx={{ mb: 3, color: 'success.main' }}>
+                  ✅ Готові компоненти:
+                </Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  <Typography variant="body2">✅ Header з логотипом та анімацією</Typography>
+                  <Typography variant="body2">✅ FloatingNav - липкі таби (зберігається в localStorage)</Typography>
+                  <Typography variant="body2">✅ Footer з контактами</Typography>
+                  <Typography variant="body2">✅ PhoneInput - автоформатування +380XXXXXXXXX</Typography>
+                  <Typography variant="body2">✅ EmailInput - валідація email</Typography>
+                  <Typography variant="body2">✅ AnimatedButton - з hover/tap анімацією та зірочками</Typography>
+                  <Typography variant="body2">✅ useStarAnimation hook - магічні зірочки</Typography>
+                </Box>
 
-            {/* Status */}
-            <Box sx={{ mt: 4, textAlign: 'center' }}>
-              <Typography variant="body2" sx={{ color: 'success.main', mb: 1 }}>
-                ✅ React встановлено
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'success.main', mb: 1 }}>
-                ✅ Material-UI налаштовано
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'success.main', mb: 1 }}>
-                ✅ Framer Motion підключено
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'success.main', mb: 1 }}>
-                ✅ Анімації зірочок працюють
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'success.main', mb: 1 }}>
-                ✅ Структура папок створена
-              </Typography>
+                <Typography variant="h3" sx={{ mt: 4, mb: 2, color: 'info.main' }}>
+                  🔄 Наступні кроки:
+                </Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  <Typography variant="body2">1. AmountSelector - вибір номіналу сертифікату</Typography>
+                  <Typography variant="body2">2. BuyForm - форма купівлі з валідацією</Typography>
+                  <Typography variant="body2">3. ActivateForm Step 1 - перевірка сертифікатів</Typography>
+                  <Typography variant="body2">4. ActivateForm Step 2 - вибір партнера та карток</Typography>
+                  <Typography variant="body2">5. Інфографіка "Як це працює"</Typography>
+                </Box>
+              </Box>
             </Box>
+          </Container>
+        </Box>
 
-            {/* Next Steps */}
-            <Box
-              sx={{
-                mt: 4,
-                p: 3,
-                bgcolor: 'background.paper',
-                borderRadius: 2,
-                maxWidth: 600,
-              }}
-            >
-              <Typography variant="h3" sx={{ mb: 2, color: 'primary.dark' }}>
-                Наступні кроки:
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 1 }}>
-                1. Створити компоненти Header та Footer
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 1 }}>
-                2. Розробити FloatingNav (навігаційні таби)
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 1 }}>
-                3. Імплементувати форму "Купити сертифікат"
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 1 }}>
-                4. Імплементувати форму "Активувати сертифікат"
-              </Typography>
-              <Typography variant="body2">
-                5. Додати інфографіку "Як це працює"
-              </Typography>
-            </Box>
-          </Box>
-        </Container>
+        {/* Footer */}
+        <Footer />
 
         {/* Stars Container - Required for star animations */}
         <StarsContainer />
