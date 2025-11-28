@@ -3,26 +3,31 @@ import { Box, Paper, Typography, Alert } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import AnimatedButton from '../../common/Button/AnimatedButton';
 import PhoneInput from '../../common/Input/PhoneInput';
 import EmailInput from '../../common/Input/EmailInput';
-import AnimatedButton from '../../common/Button/AnimatedButton';
-import AmountSelector from '../../common/AmountSelector/AmountSelector';
+import CertificateInput from '../../common/Input/CertificateInput';
+import ActivationCodeInput from '../../common/Input/ActivationCodeInput';
 import { VALIDATION_PATTERNS } from '../../../utils/constants';
 
 // LocalStorage keys
 const STORAGE_KEYS = {
-  AMOUNT: 'magiccard_buy_amount',
+  CERTIFICATE_NUMBER: 'magiccard_activate_certificate_number',
+  ACTIVATION_CODE: 'magiccard_activate_activation_code',
   PHONE: 'magiccard_phone', // Общий ключ для телефона (используется в обеих формах)
   EMAIL: 'magiccard_email', // Общий ключ для email (используется в обеих формах)
 };
 
 // Validation schema
 const schema = yup.object().shape({
-  amount: yup
-    .number()
-    .required('Оберіть суму сертифіката')
-    .min(100, 'Мінімальна сума - 100 грн')
-    .max(50000, 'Максимальна сума - 50000 грн'),
+  certificateNumber: yup
+    .string()
+    .required('Номер сертифікату обов\'язковий')
+    .min(6, 'Номер сертифікату занадто короткий'),
+  activationCode: yup
+    .string()
+    .required('Код активації обов\'язковий')
+    .matches(/^\d{4}-\d{4}-\d{4}$/, 'Формат: XXXX-XXXX-XXXX'),
   phone: yup
     .string()
     .required('Телефон обов\'язковий')
@@ -34,36 +39,38 @@ const schema = yup.object().shape({
 });
 
 /**
- * BuyForm - Form for purchasing gift certificates
+ * ActivateForm - Form for activating gift certificates
  * Features:
- * - Amount selection (preset + custom)
- * - Phone input (required)
- * - Email input (optional)
+ * - Certificate number input
+ * - Activation code input
  * - Yup validation
  * - Animated submission
  *
- * @param {function} onSuccess - Callback when purchase is successful, receives purchase data
+ * @param {function} onSuccess - Callback when activation is successful, receives activation data
  */
-const BuyForm = ({ onSuccess }) => {
+const ActivateForm = ({ onSuccess }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
   // Load saved values from localStorage
   const getSavedValues = () => {
     try {
-      const savedAmount = localStorage.getItem(STORAGE_KEYS.AMOUNT);
+      const savedCertificateNumber = localStorage.getItem(STORAGE_KEYS.CERTIFICATE_NUMBER);
+      const savedActivationCode = localStorage.getItem(STORAGE_KEYS.ACTIVATION_CODE);
       const savedPhone = localStorage.getItem(STORAGE_KEYS.PHONE);
       const savedEmail = localStorage.getItem(STORAGE_KEYS.EMAIL);
 
       return {
-        amount: savedAmount ? parseInt(savedAmount, 10) : 0,
+        certificateNumber: savedCertificateNumber || '',
+        activationCode: savedActivationCode || '',
         phone: savedPhone || '',
         email: savedEmail || '',
       };
     } catch (error) {
       console.error('Error loading saved form data:', error);
       return {
-        amount: 0,
+        certificateNumber: '',
+        activationCode: '',
         phone: '',
         email: '',
       };
@@ -88,8 +95,11 @@ const BuyForm = ({ onSuccess }) => {
   // Save form values to localStorage when they change
   useEffect(() => {
     try {
-      if (watchedValues.amount > 0) {
-        localStorage.setItem(STORAGE_KEYS.AMOUNT, watchedValues.amount.toString());
+      if (watchedValues.certificateNumber) {
+        localStorage.setItem(STORAGE_KEYS.CERTIFICATE_NUMBER, watchedValues.certificateNumber);
+      }
+      if (watchedValues.activationCode) {
+        localStorage.setItem(STORAGE_KEYS.ACTIVATION_CODE, watchedValues.activationCode);
       }
       if (watchedValues.phone) {
         localStorage.setItem(STORAGE_KEYS.PHONE, watchedValues.phone);
@@ -108,15 +118,16 @@ const BuyForm = ({ onSuccess }) => {
 
     try {
       // TODO: API call to backend
-      console.log('Submitting buy form:', data);
+      console.log('Submitting activate form:', data);
 
       // Simulate API delay
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      // Navigate to success page with purchase data
+      // Navigate to success page with activation data
       if (onSuccess) {
         onSuccess({
-          amount: data.amount,
+          certificateNumber: data.certificateNumber,
+          activationCode: data.activationCode,
           phone: data.phone,
           email: data.email,
         });
@@ -125,10 +136,10 @@ const BuyForm = ({ onSuccess }) => {
       // Reset form after successful submission
       reset();
     } catch (error) {
-      console.error('Buy form submission error:', error);
+      console.error('Activate form submission error:', error);
       setSubmitError(
         error.response?.data?.message ||
-          'Сталася помилка. Спробуйте ще раз.'
+          'Сталася помилка. Перевірте дані та спробуйте ще раз.'
       );
     } finally {
       setIsSubmitting(false);
@@ -138,21 +149,21 @@ const BuyForm = ({ onSuccess }) => {
   const steps = [
     {
       number: 1,
-      icon: '🎯',
-      title: 'Оберіть суму',
-      description: 'Виберіть номінал сертифікату',
+      icon: '🎫',
+      title: 'Введіть дані',
+      description: 'Номер сертифікату та код активації',
     },
     {
       number: 2,
       icon: '📱',
       title: 'Вкажіть контакти',
-      description: 'Залиште телефон і email',
+      description: 'Телефон і email для зв\'язку',
     },
     {
       number: 3,
-      icon: '✨',
-      title: 'Отримайте сертифікат',
-      description: 'На вказаний email або телефон',
+      icon: '🎁',
+      title: 'Отримайте подарунок',
+      description: 'Використайте сертифікат у партнерів',
     },
   ];
 
@@ -181,20 +192,37 @@ const BuyForm = ({ onSuccess }) => {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {/* Amount Selector */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          {/* Certificate Number Input */}
           <Controller
-            name="amount"
+            name="certificateNumber"
             control={control}
             render={({ field }) => (
-              <AmountSelector
+              <CertificateInput
                 value={field.value}
                 onChange={field.onChange}
-                error={
-                  touchedFields.amount && errors.amount
-                    ? errors.amount.message
-                    : undefined
-                }
+                onBlur={field.onBlur}
+                error={!!errors.certificateNumber}
+                helperText={errors.certificateNumber?.message}
+                touched={touchedFields.certificateNumber}
+                required
+              />
+            )}
+          />
+
+          {/* Activation Code Input */}
+          <Controller
+            name="activationCode"
+            control={control}
+            render={({ field }) => (
+              <ActivationCodeInput
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                error={!!errors.activationCode}
+                helperText={errors.activationCode?.message}
+                touched={touchedFields.activationCode}
+                required
               />
             )}
           />
@@ -242,7 +270,7 @@ const BuyForm = ({ onSuccess }) => {
             variant="contained"
             color="primary"
           >
-            {isSubmitting ? 'Обробка...' : 'Купити онлайн'}
+            {isSubmitting ? 'Обробка...' : 'Активувати сертифікат'}
           </AnimatedButton>
         </Box>
       </form>
@@ -255,7 +283,7 @@ const BuyForm = ({ onSuccess }) => {
             color: 'text.secondary',
           }}
         >
-          Після оформлення замовлення ми зв'яжемося з вами для підтвердження
+          Номер сертифікату та код активації вказані у вашому сертифікаті
         </Typography>
       </Paper>
 
@@ -391,4 +419,4 @@ const BuyForm = ({ onSuccess }) => {
   );
 };
 
-export default BuyForm;
+export default ActivateForm;

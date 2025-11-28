@@ -28,9 +28,10 @@ code {
     monospace;
 }
 
-/* Smooth scrolling */
+/* Disable smooth scrolling for instant scroll to top */
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto !important;
+  overflow-anchor: none;
 }
 
 /* Remove default button styles */

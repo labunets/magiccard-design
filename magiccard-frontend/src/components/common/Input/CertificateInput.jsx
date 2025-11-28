@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { InputAdornment } from '@mui/material';
 import { motion } from 'framer-motion';
-import PhoneIcon from '@mui/icons-material/Phone';
-import { VALIDATION_PATTERNS } from '../../../utils/constants';
-import UltimateMagicInput from './UltimateMagicInput';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import MagicInput from './MagicInput';
 
 /**
- * PhoneInput - Animated phone input with Ukrainian format validation
- * Automatically formats to +380XXXXXXXXX
- * Uses UltimateMagicInput for magical validation effects
+ * CertificateInput - Input for certificate numbers with auto-formatting
+ * Format: XXXX-XXXX-XXXX (12 digits)
+ * Uses MagicInput for validation effects (simpler than UltimateMagicInput)
  *
  * @param {string} value - Current input value
  * @param {function} onChange - Change handler
@@ -18,7 +17,7 @@ import UltimateMagicInput from './UltimateMagicInput';
  * @param {boolean} touched - Whether field was touched
  * @param {boolean} required - Whether field is required
  */
-const PhoneInput = ({
+const CertificateInput = ({
   value,
   onChange,
   onBlur,
@@ -29,37 +28,30 @@ const PhoneInput = ({
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState(false);
-  // Check if phone is fully filled and valid after each digit
-  const isValid = value && VALIDATION_PATTERNS.PHONE.test(value);
+
+  // Validate certificate format (12 digits)
+  const isValid = value && /^\d{4}-?\d{4}-?\d{4}$/.test(value.replace(/-/g, ''));
 
   const handleChange = (e) => {
     let input = e.target.value;
 
-    // Автоматично додаємо +380 якщо порожнє
-    if (!input) {
-      input = '+380';
+    // Remove all non-digits
+    const digits = input.replace(/\D/g, '');
+
+    // Format as XXXX-XXXX-XXXX
+    let formatted = '';
+    for (let i = 0; i < Math.min(digits.length, 12); i++) {
+      if (i > 0 && i % 4 === 0) {
+        formatted += '-';
+      }
+      formatted += digits[i];
     }
 
-    // Дозволяємо тільки +380 на початку
-    if (!input.startsWith('+380')) {
-      input = '+380' + input.replace(/[^\d]/g, '');
-    }
-
-    // Дозволяємо тільки цифри після +380
-    if (input.startsWith('+380')) {
-      const digits = input.slice(4).replace(/\D/g, '');
-      input = '+380' + digits.slice(0, 9); // Максимум 9 цифр після +380
-    }
-
-    onChange(input);
+    onChange(formatted);
   };
 
   const handleFocus = () => {
     setIsFocused(true);
-    // Якщо поле порожнє, додаємо +380
-    if (!value) {
-      onChange('+380');
-    }
   };
 
   const handleBlur = (e) => {
@@ -68,7 +60,7 @@ const PhoneInput = ({
   };
 
   return (
-    <UltimateMagicInput
+    <MagicInput
       {...props}
       value={value || ''}
       onChange={handleChange}
@@ -78,16 +70,16 @@ const PhoneInput = ({
       helperText={helperText}
       touched={touched}
       isValid={isValid}
-      label={required ? 'Телефон *' : 'Телефон'}
-      placeholder="+380XXXXXXXXX"
+      label={required ? 'Номер сертифікату *' : 'Номер сертифікату'}
+      placeholder="XXXX-XXXX-XXXX"
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
             <motion.div
-              animate={isFocused ? { rotate: [0, -10, 10, 0] } : {}}
-              transition={{ duration: 0.5 }}
+              animate={isFocused ? { rotate: [0, -15, 15, 0] } : {}}
+              transition={{ duration: 0.6 }}
             >
-              <PhoneIcon
+              <ConfirmationNumberIcon
                 sx={{
                   color: isValid ? '#10B981' : (isFocused ? '#8B5CF6' : 'rgba(0, 0, 0, 0.54)'),
                   transition: 'color 0.3s',
@@ -97,8 +89,15 @@ const PhoneInput = ({
           </InputAdornment>
         ),
       }}
+      sx={{
+        '& input': {
+          fontFamily: 'monospace',
+          fontSize: '1.1rem',
+          letterSpacing: '0.05em',
+        },
+      }}
     />
   );
 };
 
-export default PhoneInput;
+export default CertificateInput;

@@ -7,7 +7,7 @@ import PhoneIcon from '@mui/icons-material/Phone';
  * Footer - Site footer with contact info and links
  * Dark purple background with white text
  */
-const Footer = () => {
+const Footer = ({ onNavigate }) => {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -75,30 +75,21 @@ const Footer = () => {
             }}
           >
             <Link
-              href="#"
+              component="button"
+              onClick={() => onNavigate && onNavigate('offer')}
               underline="hover"
               sx={{
                 color: 'rgba(255, 255, 255, 0.8)',
                 fontSize: 14,
+                cursor: 'pointer',
+                background: 'none',
+                border: 'none',
                 '&:hover': {
                   color: 'white',
                 },
               }}
             >
-              Політика конфіденційності
-            </Link>
-            <Link
-              href="#"
-              underline="hover"
-              sx={{
-                color: 'rgba(255, 255, 255, 0.8)',
-                fontSize: 14,
-                '&:hover': {
-                  color: 'white',
-                },
-              }}
-            >
-              Умови використання
+              Договір-оферта
             </Link>
           </Box>
 
