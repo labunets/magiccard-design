@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { TextField, InputAdornment, Box } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import CheckIcon from '@mui/icons-material/Check';
@@ -11,10 +11,12 @@ import CheckIcon from '@mui/icons-material/Check';
  * - Magical glow and pulse effects
  * - Animated checkmark icon
  * - Magic dust particles
+ * - Auto-scroll to center on focus
  *
  * @param {string} value - Current input value
  * @param {function} onChange - Change handler
  * @param {function} onBlur - Blur handler
+ * @param {function} onFocus - Focus handler
  * @param {object} error - Error object from validation
  * @param {string} helperText - Helper or error text
  * @param {boolean} touched - Whether field was touched
@@ -25,6 +27,7 @@ const MagicInput = ({
   value,
   onChange,
   onBlur,
+  onFocus,
   error,
   helperText,
   touched,
@@ -33,6 +36,7 @@ const MagicInput = ({
   ...props
 }) => {
   const [showMagic, setShowMagic] = useState(false);
+  const inputRef = useRef(null);
 
   // Тригер магічного ефекту при валідації
   useEffect(() => {
@@ -45,8 +49,31 @@ const MagicInput = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isValid]);
 
+  const handleFocus = (e) => {
+    // Прокручиваємо поле до центру екрану
+    if (inputRef.current) {
+      setTimeout(() => {
+        const element = inputRef.current;
+        const rect = element.getBoundingClientRect();
+        const elementCenter = rect.top + rect.height / 2;
+        const windowCenter = window.innerHeight / 2;
+        const scrollOffset = elementCenter - windowCenter;
+
+        window.scrollBy({
+          top: scrollOffset,
+          behavior: 'smooth'
+        });
+      }, 100); // Невелика затримка для коректної роботи на мобільних
+    }
+
+    // Викликаємо зовнішній onFocus якщо є
+    if (onFocus) {
+      onFocus(e);
+    }
+  };
+
   return (
-    <Box sx={{ position: 'relative', width: '100%' }}>
+    <Box ref={inputRef} sx={{ position: 'relative', width: '100%' }}>
       <motion.div
         animate={showMagic ? {
           scale: [1, 1.02, 1],
@@ -58,6 +85,7 @@ const MagicInput = ({
           value={value}
           onChange={onChange}
           onBlur={onBlur}
+          onFocus={handleFocus}
           error={touched && !!error}
           helperText={touched && helperText}
           fullWidth

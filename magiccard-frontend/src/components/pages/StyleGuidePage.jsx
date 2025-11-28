@@ -6,9 +6,7 @@ import {
   Paper,
   Divider,
   Grid,
-  Alert,
 } from '@mui/material';
-import { motion, AnimatePresence } from 'framer-motion';
 import PhoneInput from '../common/Input/PhoneInput';
 import EmailInput from '../common/Input/EmailInput';
 import MagicInput from '../common/Input/MagicInput';
@@ -33,19 +31,9 @@ const StyleGuidePage = () => {
   const [emailValid] = useState('example@domain.com');
   const [emailInvalid] = useState('invalid-email');
 
-  // State for success message
-  const [showSuccess, setShowSuccess] = useState(false);
-
+  // Buttons on style guide page should not trigger any actions
   const handleButtonClick = () => {
-    setShowSuccess(true);
-    // Автоматически закрыть через 3 секунды
-    setTimeout(() => {
-      setShowSuccess(false);
-    }, 3000);
-  };
-
-  const handleCloseSuccess = () => {
-    setShowSuccess(false);
+    // Do nothing - this is just for demonstration
   };
 
   // Validation logic for demo
@@ -520,67 +508,6 @@ const StyleGuidePage = () => {
           </Box>
         </Paper>
       </Container>
-
-      {/* Success Message with Magic Effects */}
-      <AnimatePresence>
-        {showSuccess && (
-          <Alert
-              component={motion.div}
-              initial={{
-                scale: 0,
-                rotate: -180,
-                opacity: 0,
-              }}
-              animate={{
-                scale: 1,
-                rotate: 0,
-                opacity: 1,
-              }}
-              exit={{
-                scale: 0,
-                rotate: 180,
-                opacity: 0,
-              }}
-              transition={{
-                duration: 0.5,
-                ease: 'backOut',
-              }}
-              onClose={handleCloseSuccess}
-              severity="success"
-              sx={{
-                position: 'fixed',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                zIndex: 9999,
-                width: 'auto',
-                minWidth: { xs: '300px', sm: '400px' },
-                maxWidth: { xs: '90vw', sm: '600px' },
-                fontSize: { xs: '1.2rem', sm: '1.5rem' },
-                fontWeight: 700,
-                py: 3,
-                px: 4,
-                borderRadius: 3,
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), 0 0 50px rgba(16, 185, 129, 0.3)',
-                background: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)',
-                border: '2px solid #10B981',
-                  '& .MuiAlert-icon': {
-                    fontSize: '3rem',
-                  },
-                  '& .MuiAlert-message': {
-                    display: 'flex',
-                    alignItems: 'center',
-                    color: '#065f46',
-                  },
-                  '& .MuiAlert-action': {
-                    color: '#065f46',
-                  },
-                }}
-            >
-              🎉 Сертифікат успішно куплено! Перевірте ваш email.
-            </Alert>
-        )}
-      </AnimatePresence>
     </Box>
   );
 };

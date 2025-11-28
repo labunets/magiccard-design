@@ -1,13 +1,13 @@
 import { Box, Container, Typography, Paper } from '@mui/material';
 import { motion } from 'framer-motion';
 import AnimatedButton from '../common/Button/AnimatedButton';
-import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 /**
  * ActivationSuccessPage - Success confirmation page after certificate activation
  * Shows success message with animation and navigation options
  */
-const ActivationSuccessPage = ({ onNavigateHome, activationData }) => {
+const ActivationSuccessPage = ({ onNavigateHome, onNavigateActivate, activationData }) => {
   return (
     <Container maxWidth="md">
       <Box
@@ -30,12 +30,11 @@ const ActivationSuccessPage = ({ onNavigateHome, activationData }) => {
             duration: 0.6,
           }}
         >
-          <CardGiftcardIcon
+          <CheckCircleIcon
             sx={{
               fontSize: 120,
-              color: '#8B5CF6',
+              color: '#10B981',
               mb: 3,
-              filter: 'drop-shadow(0 0 20px rgba(139, 92, 246, 0.4))',
             }}
           />
         </motion.div>
@@ -52,8 +51,8 @@ const ActivationSuccessPage = ({ onNavigateHome, activationData }) => {
               p: { xs: 3, md: 5 },
               borderRadius: 3,
               border: '2px solid',
-              borderColor: 'primary.main',
-              bgcolor: 'rgba(139, 92, 246, 0.05)',
+              borderColor: '#10B981',
+              bgcolor: 'rgba(16, 185, 129, 0.05)',
               textAlign: 'center',
             }}
           >
@@ -157,7 +156,7 @@ const ActivationSuccessPage = ({ onNavigateHome, activationData }) => {
               </AnimatedButton>
 
               <AnimatedButton
-                onClick={() => window.location.reload()}
+                onClick={onNavigateActivate}
                 variant="outlined"
                 size="large"
                 sx={{ minWidth: 200 }}
@@ -178,7 +177,7 @@ const ActivationSuccessPage = ({ onNavigateHome, activationData }) => {
             sx={{
               mt: 4,
               p: 3,
-              bgcolor: 'primary.light',
+              bgcolor: 'rgba(16, 185, 129, 0.1)',
               borderRadius: 2,
               maxWidth: 600,
             }}
@@ -191,7 +190,7 @@ const ActivationSuccessPage = ({ onNavigateHome, activationData }) => {
                 fontSize: { xs: '0.9rem', md: '1rem' },
               }}
             >
-              🎁 <strong>Що далі?</strong> Інструкції щодо використання вашого подарунка
+              💡 <strong>Що далі?</strong> Інструкції щодо використання вашого подарунка
               надіслано на вказаний email або телефон. Якщо у вас виникнуть питання,
               зв'яжіться з нашою службою підтримки.
             </Typography>

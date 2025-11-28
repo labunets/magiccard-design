@@ -20,6 +20,7 @@ import ActivateForm from './components/forms/ActivateForm/ActivateForm';
 import StyleGuidePage from './components/pages/StyleGuidePage';
 import SuccessPage from './components/pages/SuccessPage';
 import ActivationSuccessPage from './components/pages/ActivationSuccessPage';
+import HowItWorksPage from './components/pages/HowItWorksPage';
 
 // Transitions
 import PageTransition from './components/common/PageTransition/PageTransition';
@@ -84,8 +85,13 @@ function App() {
     } else if (page === 'contacts') {
       // Scroll to footer
       footerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (page === 'how') {
+      // Navigate to "How It Works" page
+      setPurchaseData(null);
+      setActivationData(null);
+      scrollAndNavigate('how');
     }
-    // TODO: Handle other pages (how, offer)
+    // TODO: Handle other pages (offer)
   };
 
   const handlePurchaseSuccess = (data) => {
@@ -118,8 +124,12 @@ function App() {
             activeTab === 'activation-success' ? (
               <ActivationSuccessPage
                 onNavigateHome={() => handleNavigate('home')}
+                onNavigateActivate={() => handleNavigate('activate')}
                 activationData={activationData}
               />
+            ) : /* How It Works Page */
+            activeTab === 'how' ? (
+              <HowItWorksPage />
             ) : /* Style Guide Page */
             activeTab === 'styleguide' ? (
               <StyleGuidePage />

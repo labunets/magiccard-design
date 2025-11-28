@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { TextField, InputAdornment, Box } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import CheckIcon from '@mui/icons-material/Check';
@@ -11,12 +11,14 @@ import CheckIcon from '@mui/icons-material/Check';
  * - Phase 3: Magic dust particles
  * - Phase 4: Final glow and checkmark
  * - Smooth transitions between phases
+ * - Auto-scroll to center on focus
  *
  * Use for important fields like Phone, Email, Certificate Code
  *
  * @param {string} value - Current input value
  * @param {function} onChange - Change handler
  * @param {function} onBlur - Blur handler
+ * @param {function} onFocus - Focus handler
  * @param {object} error - Error object from validation
  * @param {string} helperText - Helper or error text
  * @param {boolean} touched - Whether field was touched
@@ -27,6 +29,7 @@ const UltimateMagicInput = ({
   value,
   onChange,
   onBlur,
+  onFocus,
   error,
   helperText,
   touched,
@@ -36,6 +39,7 @@ const UltimateMagicInput = ({
 }) => {
   const [showMagic, setShowMagic] = useState(false);
   const [effectPhase, setEffectPhase] = useState(0); // 0: idle, 1: wand, 2: stars, 3: complete
+  const inputRef = useRef(null);
 
   useEffect(() => {
     if (isValid && !showMagic) {
@@ -67,8 +71,31 @@ const UltimateMagicInput = ({
     setEffectPhase(0);
   };
 
+  const handleFocus = (e) => {
+    // Прокручиваємо поле до центру екрану
+    if (inputRef.current) {
+      setTimeout(() => {
+        const element = inputRef.current;
+        const rect = element.getBoundingClientRect();
+        const elementCenter = rect.top + rect.height / 2;
+        const windowCenter = window.innerHeight / 2;
+        const scrollOffset = elementCenter - windowCenter;
+
+        window.scrollBy({
+          top: scrollOffset,
+          behavior: 'smooth'
+        });
+      }, 100); // Невелика затримка для коректної роботи на мобільних
+    }
+
+    // Викликаємо зовнішній onFocus якщо є
+    if (onFocus) {
+      onFocus(e);
+    }
+  };
+
   return (
-    <Box sx={{ position: 'relative', width: '100%' }}>
+    <Box ref={inputRef} sx={{ position: 'relative', width: '100%' }}>
       {/* Основне поле */}
       <motion.div
         animate={effectPhase > 0 ? {
@@ -81,6 +108,7 @@ const UltimateMagicInput = ({
           value={value}
           onChange={onChange}
           onBlur={onBlur}
+          onFocus={handleFocus}
           error={touched && !!error}
           helperText={touched && helperText}
           fullWidth

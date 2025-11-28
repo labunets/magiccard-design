@@ -35,7 +35,6 @@ const SuccessPage = ({ onNavigateHome, purchaseData }) => {
               fontSize: 120,
               color: '#10B981',
               mb: 3,
-              filter: 'drop-shadow(0 0 20px rgba(16, 185, 129, 0.3))',
             }}
           />
         </motion.div>
