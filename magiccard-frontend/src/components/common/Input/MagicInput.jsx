@@ -50,14 +50,13 @@ const MagicInput = ({
   }, [isValid]);
 
   const handleFocus = (e) => {
-    // Прокручиваємо поле до центру екрану
+    // Прокручиваємо поле на 25% від верху екрану
     if (inputRef.current) {
       setTimeout(() => {
         const element = inputRef.current;
         const rect = element.getBoundingClientRect();
-        const elementCenter = rect.top + rect.height / 2;
-        const windowCenter = window.innerHeight / 2;
-        const scrollOffset = elementCenter - windowCenter;
+        const targetPosition = window.innerHeight * 0.25;
+        const scrollOffset = rect.top - targetPosition;
 
         window.scrollBy({
           top: scrollOffset,
