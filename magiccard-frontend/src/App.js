@@ -137,12 +137,29 @@ function App() {
               /* Content Area */
               <Container maxWidth="lg">
                 <Box sx={{ py: 4 }}>
-                  {/* Banner Image */}
+                  {/* Banner Image - Buy */}
                   {activeTab === 'buy' && (
                     <Box sx={{ mb: 4, textAlign: 'center' }}>
                       <img
                         src="/banner.jpg"
                         alt="MagicCard Banner"
+                        style={{
+                          width: '100%',
+                          maxWidth: '800px',
+                          height: 'auto',
+                          borderRadius: '16px',
+                          boxShadow: '0 4px 20px rgba(220, 38, 38, 0.15)',
+                        }}
+                      />
+                    </Box>
+                  )}
+
+                  {/* Banner Image - Activate */}
+                  {activeTab === 'activate' && (
+                    <Box sx={{ mb: 4, textAlign: 'center' }}>
+                      <img
+                        src="/banner2.jpg"
+                        alt="MagicCard Activate Banner"
                         style={{
                           width: '100%',
                           maxWidth: '800px',
