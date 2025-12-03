@@ -137,6 +137,23 @@ function App() {
               /* Content Area */
               <Container maxWidth="lg">
                 <Box sx={{ py: 4 }}>
+                  {/* Banner Image */}
+                  {activeTab === 'buy' && (
+                    <Box sx={{ mb: 4, textAlign: 'center' }}>
+                      <img
+                        src="/banner.jpg"
+                        alt="MagicCard Banner"
+                        style={{
+                          width: '100%',
+                          maxWidth: '800px',
+                          height: 'auto',
+                          borderRadius: '16px',
+                          boxShadow: '0 4px 20px rgba(220, 38, 38, 0.15)',
+                        }}
+                      />
+                    </Box>
+                  )}
+
                   {/* Welcome Section */}
                   <Box sx={{ textAlign: 'center', mb: 6 }}>
                     <Typography

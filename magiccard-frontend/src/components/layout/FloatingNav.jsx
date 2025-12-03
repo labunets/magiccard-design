@@ -87,14 +87,14 @@ const FloatingNav = ({ activeTab, onTabChange }) => {
                   justifyContent: 'center',
                   px: 3,
                   gap: 1.5,
-                  bgcolor: '#8B5CF6',
+                  bgcolor: '#DC2626',
                   borderRadius: 2,
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   '&:hover': {
-                    bgcolor: '#7C3AED',
+                    bgcolor: '#B91C1C',
                   },
                   '&:active': {
-                    bgcolor: '#6D28D9',
+                    bgcolor: '#991B1B',
                   },
                 }}
               >

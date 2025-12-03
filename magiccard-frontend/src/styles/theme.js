@@ -3,9 +3,9 @@ import { createTheme } from '@mui/material/styles';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#8B5CF6',      // Магічний фіолетовий
-      dark: '#6D28D9',      // Темний фіолетовий
-      light: '#DDD6FE',     // Світлий фіолетовий
+      main: '#DC2626',      // Святковий червоний
+      dark: '#991B1B',      // Темний червоний
+      light: '#FEE2E2',     // Світлий червоний
       contrastText: '#FFFFFF',
     },
     secondary: {
@@ -86,7 +86,7 @@ const theme = createTheme({
           fontWeight: 600,
           boxShadow: 'none',
           '&:hover': {
-            boxShadow: '0 8px 16px rgba(139, 92, 246, 0.2)',
+            boxShadow: '0 8px 16px rgba(220, 38, 38, 0.2)',
           },
         },
         sizeLarge: {
